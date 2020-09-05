@@ -1,10 +1,15 @@
 import { Router } from 'express';
+import multer from 'multer';
+import uploadConfig from '@config/upload';
 import { celebrate, Segments, Joi } from 'celebrate';
 
 import DeliveryController from '@modules/delivery/infra/http/controllers/DeliveryController';
+import UploadController from '@modules/delivery/infra/http/controllers/UploadController';
 
 const deliveryRouter = Router();
+const upload = multer(uploadConfig.multer);
 const deliveryController = new DeliveryController();
+const uploadController = new UploadController();
 
 deliveryRouter.post(
   '/',
@@ -16,6 +21,12 @@ deliveryRouter.post(
     },
   }),
   deliveryController.create,
+);
+
+deliveryRouter.patch(
+  '/upload',
+  upload.single('upload'),
+  uploadController.create,
 );
 
 export default deliveryRouter;
