@@ -1,7 +1,7 @@
-import Delivery from '../infra/entities/Delivery';
-// import ICreateUserDTOS from '../dtos/ICreateUserDTOS';
-// import IFindAllProvidersDTO from '../dtos/IFindAllProvidersDTO';
+import Delivery from '../infra/typeorm/entities/Delivery';
+import ICreateDeliveryDTOS from '../dtos/ICreateDeliveryDTOS';
 
 export default interface IDeliveryRepository {
-  create(data: Delivery): Promise<Delivery>;
+  create(data: ICreateDeliveryDTOS): Promise<Delivery>;
+  findAll(): Promise<Delivery[] | undefined>;
 }

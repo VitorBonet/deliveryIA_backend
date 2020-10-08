@@ -2,29 +2,34 @@ import 'reflect-metadata';
 import 'dotenv/config';
 
 import cors from 'cors';
-import express, {
-  Request,
-  Response,
-  NextFunction,
-} from '../../../modules/delivery/infra/http/controllers/node_modules/express';
-import { errors } from '../../../modules/delivery/infra/http/routes/node_modules/celebrate';
+import express, { Request, Response, NextFunction } from 'express';
+import { errors } from 'celebrate';
 import 'express-async-errors';
-import uploadConfig from '../../../modules/delivery/infra/typeorm/entities/node_modules/@config/upload';
-import AppError from '../../../modules/delivery/infra/http/middlewares/node_modules/@shared/errors/AppError';
+import uploadConfig from '@config/upload';
 import routes from '@shared/infra/http/routes';
-import rateLimiter from './middlewares/rateLimiter';
+import AppError from '@shared/errors/AppError';
+
+import '@shared/infra/typeorm';
+import '@shared/container';
+// import rateLimiter from './middlewares/rateLimiter';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use('/files', express.static(uploadConfig.tmpFolder));
-app.use(rateLimiter);
+// app.use(rateLimiter);
 app.use(routes);
 
 app.use(errors());
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
+  if (err instanceof AppError) {
+    return response.status(err.statusCode).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
   console.log(err);
   return response.status(500).json({
     status: 'error',

@@ -1,27 +1,21 @@
 import { Router } from 'express';
 import multer from 'multer';
 import uploadConfig from '@config/upload';
-import { celebrate, Segments, Joi } from 'celebrate';
+// import { celebrate, Segments, Joi } from 'celebrate';
 
 import DeliveryController from '@modules/delivery/infra/http/controllers/DeliveryController';
+import GrafoController from '@modules/delivery/infra/http/controllers/GrafoController';
 import UploadController from '@modules/delivery/infra/http/controllers/UploadController';
 
 const deliveryRouter = Router();
 const upload = multer(uploadConfig.multer);
 const deliveryController = new DeliveryController();
+const grafoController = new GrafoController();
 const uploadController = new UploadController();
 
-deliveryRouter.post(
-  '/',
-  celebrate({
-    [Segments.BODY]: {
-      name: Joi.string().required(),
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-    },
-  }),
-  deliveryController.create,
-);
+deliveryRouter.get('/', deliveryController.show);
+deliveryRouter.get('/grafo', grafoController.show);
+deliveryRouter.get('/teste', grafoController.teste);
 
 deliveryRouter.patch(
   '/upload',

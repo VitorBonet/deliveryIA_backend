@@ -1,20 +1,14 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import CreateDeliveryService from '@modules/delivery/services/CreateDeliveryService';
+import ListDeliveryService from '@modules/delivery/services/ListDeliveryService';
 
-export default class UsersController {
-  public async create(request: Request, response: Response): Promise<Response> {
-    const { name, email, password } = request.body;
+export default class DeliveryController {
+  public async show(request: Request, response: Response): Promise<Response> {
+    const listDeliveryService = container.resolve(ListDeliveryService);
 
-    const createDelivery = container.resolve(CreateDeliveryService);
+    const deliverys = await listDeliveryService.show();
 
-    const delivery = await createDelivery.execute({
-      name,
-      email,
-      password,
-    });
-
-    return response.json(delivery);
+    return response.json(deliverys);
   }
 }

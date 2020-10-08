@@ -1,8 +1,9 @@
-import ItemGrafo from '../infra/entities/ItemGrafo';
-// import ICreateUserDTOS from '../dtos/ICreateUserDTOS';
-// import IFindAllProvidersDTO from '../dtos/IFindAllProvidersDTO';
+import ItemGrafo from '../infra/typeorm/entities/ItemGrafo';
+import ICreateItemGrafoDTOS from '../dtos/ICreateItemGrafoDTOS';
 
 export default interface IGrafoRepository {
-  create(data: ItemGrafo): Promise<ItemGrafo>;
+  create(data: ICreateItemGrafoDTOS): Promise<ItemGrafo>;
+  findById(id: string): Promise<ItemGrafo | undefined>;
   findByName(name: string): Promise<ItemGrafo | undefined>;
+  findAll(): Promise<ItemGrafo[] | undefined>;
 }

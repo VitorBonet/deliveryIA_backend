@@ -1,14 +1,9 @@
 import { injectable, inject } from 'tsyringe';
 
-import Delivery from '../infra/entities/Delivery';
+import ICreateDeliveryDTOS from '@modules/delivery/dtos/ICreateDeliveryDTOS';
+import Delivery from '../infra/typeorm/entities/Delivery';
 
 import IDeliveryRepository from '../repositories/IDeliveryRepository';
-
-interface IRequest {
-  name: string;
-  email: string;
-  password: string;
-}
 
 @injectable()
 class CreateDeliveryService {
@@ -17,11 +12,17 @@ class CreateDeliveryService {
     private deliveryRepository: IDeliveryRepository,
   ) {}
 
-  public async execute({ name, email, password }: IRequest): Promise<Delivery> {
+  public async execute({
+    order_id,
+    exec,
+    seq,
+    type,
+  }: ICreateDeliveryDTOS): Promise<Delivery> {
     const delivery = await this.deliveryRepository.create({
-      name,
-      email,
-      password: hashedPassword,
+      order_id,
+      exec,
+      seq,
+      type,
     });
 
     return delivery;
