@@ -97,7 +97,6 @@
   ### 🖨 Como baixar o projeto
 
   ```bash
-
     # Clonar o repositório
     $ git clone https://github.com/VitorBonet/deliveryIA_backend.git
 
@@ -107,6 +106,8 @@
     # Intalar as dependências
     $ yarn install
 
+    # Rodar as migrations do BD
+    $ yarn typeorm migration:run
 
     # Iniciar o projeto
     $ yarn dev:server
