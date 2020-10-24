@@ -23,7 +23,7 @@ container.registerSingleton<IGrafoRepository>(
   'GrafoRepository',
   GrafoRepository,
 );
-0;
+
 container.registerSingleton<IVertexGrafoRepository>(
   'VertexGrafoRespository',
   VertexGrafoRespository,
