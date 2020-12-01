@@ -11,6 +11,7 @@ import CreateOrderService from './CreateOrderService';
 import CreateItemGrafoService from './CreateItemGrafoService';
 import CreateVertexGrafoService from './CreateVertexGrafoService';
 import ExecuteA1Service from './ExecuteA1Service';
+import ExecuteA2Service from './ExecuteA2Service';
 
 interface ICSVItem {
   title: string;
@@ -42,6 +43,7 @@ class ImportTransactionsService {
       CreateVertexGrafoService,
     );
     const executeA1Service = container.resolve(ExecuteA1Service);
+    const executeA2Service = container.resolve(ExecuteA2Service);
 
     const filepath = path.join(uploadConfig.tmpFolder, filename);
     let newItensGrafoArr: ItemGrafo[] = [];
@@ -139,6 +141,7 @@ class ImportTransactionsService {
     }
 
     await executeA1Service.execute();
+    await executeA2Service.execute();
 
     const findGrafo = await this.grafoRepository.findAll();
 

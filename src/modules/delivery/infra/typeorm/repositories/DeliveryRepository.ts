@@ -30,8 +30,13 @@ class DeliveryRepository implements IDeliveryRepository {
     return delivery;
   }
 
-  public async findAll(): Promise<Delivery[] | undefined> {
+  public async findAllByExec(
+    exec: 'A1' | 'A2',
+  ): Promise<Delivery[] | undefined> {
     const deliverys = await this.ormRepository.find({
+      where: {
+        exec,
+      },
       relations: ['order', 'order.itemGrafo'],
     });
 

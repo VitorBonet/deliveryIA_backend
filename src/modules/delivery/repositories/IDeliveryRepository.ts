@@ -3,5 +3,5 @@ import ICreateDeliveryDTOS from '../dtos/ICreateDeliveryDTOS';
 
 export default interface IDeliveryRepository {
   create(data: ICreateDeliveryDTOS): Promise<Delivery>;
-  findAll(): Promise<Delivery[] | undefined>;
+  findAllByExec(exec: 'A1' | 'A2'): Promise<Delivery[] | undefined>;
 }

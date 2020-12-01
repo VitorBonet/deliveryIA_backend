@@ -11,8 +11,8 @@ class ListDeliveryService {
     private deliveryRepository: IDeliveryRepository,
   ) {}
 
-  async show(): Promise<Delivery[] | undefined> {
-    const deliverys = this.deliveryRepository.findAll();
+  async show(exec: 'A1' | 'A2'): Promise<Delivery[] | undefined> {
+    const deliverys = this.deliveryRepository.findAllByExec(exec);
 
     if (!deliverys) {
       throw new AppError('Nenhum item Encontrado');

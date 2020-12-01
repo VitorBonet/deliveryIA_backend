@@ -1,6 +1,5 @@
 import { injectable, inject, container } from 'tsyringe';
 
-import ICreateDeliveryDTOS from '@modules/delivery/dtos/ICreateDeliveryDTOS';
 import Delivery from '../infra/typeorm/entities/Delivery';
 import Order from '../infra/typeorm/entities/Order';
 
@@ -8,12 +7,18 @@ import IDeliveryRepository from '../repositories/IDeliveryRepository';
 import IGrafoRepository from '../repositories/IGrafoRepository';
 import IOrderRepository from '../repositories/IOrderRepository';
 
-// import BsfService from './BsfService';
 import DijkstraService from './DijkstraService';
+import WisService from './WisService';
 import CreateDeliveryService from './CreateDeliveryService';
 
+interface IOrderTimes {
+  order_id: string;
+  value: number;
+  start: number;
+  end: number;
+}
+
 interface IResponse {
-  time: number;
   value: number;
   used: Order[];
   not_used: Order[];
@@ -33,63 +38,83 @@ class ExecuteA1Service {
   ) {}
 
   public async execute(): Promise<IResponse> {
-    // const bsfService = container.resolve(BsfService);
     const dijkstraService = container.resolve(DijkstraService);
+    const wisService = container.resolve(WisService);
     const createDeliveryService = container.resolve(CreateDeliveryService);
 
     const used: Order[] = [];
-    const not_used: Order[] = [];
-    let time = 0;
-    let value = 0;
-    let seqIn = 0;
-    let seqOut = 0;
+    let not_used: Order[] = [];
+    let wis;
+    const time = 0;
+    const value = 0;
 
     const grafo = await this.grafoRepository.findAll();
     const orders = await this.orderRepository.findAll();
 
     if (grafo && orders) {
+      const initial_grafo_index = grafo.findIndex(
+        (itemGraf) => itemGraf.name === 'A',
+      );
+
+      const initial_grafo = grafo[initial_grafo_index];
+
+      const orders_times = [] as IOrderTimes[];
+
       for (let i = 0; i < orders.length; i++) {
         const order = orders[i];
         const item_grafo = grafo?.find(
           (itemGrafo) => itemGrafo.id === order.itemGrafo_id,
         );
 
-        if (item_grafo && (order.time >= time || time === 0)) {
-          seqIn += 1;
-
-          used.push(order);
-          await createDeliveryService.execute({
-            order_id: order.id,
-            exec: 'A1',
-            seq: seqIn,
-            type: 'Income',
-          });
-
-          const bsf = await dijkstraService.execute({
+        if (item_grafo) {
+          const dijkstra = await dijkstraService.execute({
             grafo,
-            start_id: grafo[0].id,
+            start_id: initial_grafo.id,
             destiny_id: item_grafo.id,
           });
 
-          if (bsf) {
-            time += bsf.time * 2;
-            value += order.value;
-          }
-        } else {
-          seqOut += 1;
-
-          not_used.push(order);
-          await createDeliveryService.execute({
+          const order_times = {
             order_id: order.id,
-            exec: 'A1',
-            seq: seqOut,
-            type: 'Outcome',
-          });
+            value: order.value,
+            start: order.time,
+            end: order.time + dijkstra.time * 2,
+          };
+
+          orders_times.push(order_times);
         }
       }
+
+      wis = await wisService.execute({ orders_times });
+
+      not_used = orders;
+      let seqIn = 1;
+      wis.used.forEach(async (id) => {
+        not_used = not_used.filter((order) => order.id !== id);
+
+        await createDeliveryService.execute({
+          order_id: id,
+          exec: 'A2',
+          seq: seqIn,
+          type: 'Income',
+        });
+
+        seqIn += 1;
+      });
+
+      let seqOut = 1;
+      not_used.forEach(async (order) => {
+        await createDeliveryService.execute({
+          order_id: order.id,
+          exec: 'A2',
+          seq: seqOut,
+          type: 'Outcome',
+        });
+
+        seqOut += 1;
+      });
     }
 
-    return { time, value, used, not_used };
+    return { value: wis?.value || 0, used, not_used };
   }
 }
 
