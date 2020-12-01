@@ -10,7 +10,7 @@
 
 ### 📜 Sobre
 
-  **Leilão de entregas - Front-End** é a parte back-end de um trabalho universitário o desafio é dado uma entrada .csv com dados do grafo, que representam o mapa, e os pedidos o sistema defina quais serão entregues e quais não, buscando um valor final de pagamento maior, sabendo que cada entrega tem um custo diferente.
+  **Leilão de entregas - Back-End** é a parte back-end de um trabalho universitário o desafio é dado uma entrada .csv com dados do grafo, que representam o mapa, e os pedidos o sistema defina quais serão entregues e quais não, buscando um valor final de pagamento maior, sabendo que cada entrega tem um custo diferente.
 
   **A1** deverá importar o .csv e exibir as entregas realizadas, sem necessidade de buscar o melhor caminho.
 
