@@ -1,7 +1,5 @@
 import { injectable } from 'tsyringe';
 
-import ItemGrafo from '../infra/typeorm/entities/ItemGrafo';
-
 interface IOrderTimes {
   order_id: string;
   value: number;

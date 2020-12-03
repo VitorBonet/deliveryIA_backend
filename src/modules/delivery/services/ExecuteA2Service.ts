@@ -1,6 +1,5 @@
 import { injectable, inject, container } from 'tsyringe';
 
-import Delivery from '../infra/typeorm/entities/Delivery';
 import Order from '../infra/typeorm/entities/Order';
 
 import IDeliveryRepository from '../repositories/IDeliveryRepository';
@@ -45,8 +44,6 @@ class ExecuteA1Service {
     const used: Order[] = [];
     let not_used: Order[] = [];
     let wis;
-    const time = 0;
-    const value = 0;
 
     const grafo = await this.grafoRepository.findAll();
     const orders = await this.orderRepository.findAll();

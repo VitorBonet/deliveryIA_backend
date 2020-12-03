@@ -57,6 +57,8 @@ class ExecuteA1Service {
         if (item_grafo && (order.time >= time || time === 0)) {
           seqIn += 1;
 
+          time = order.time;
+
           used.push(order);
           await createDeliveryService.execute({
             order_id: order.id,
